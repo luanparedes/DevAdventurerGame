@@ -34,14 +34,19 @@ public class Player : MonoBehaviour
 
         rig.velocity = new Vector2(movement * speed, rig.velocity.y);
 
-        if(movement > 0)
+        if(movement > 0 && !isJumping)
         {
+            anim.SetInteger("transition", 1);
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        if(movement < 0)
+        if(movement < 0 && !isJumping)
         {
+            anim.SetInteger("transition", 1);
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
+
+        if (movement == 0 && !isJumping)
+            anim.SetInteger("transition", 0);
     }
 
     public void Jump()
@@ -50,6 +55,7 @@ public class Player : MonoBehaviour
         {
             if (!isJumping)
             {
+                anim.SetInteger("transition", 2);
                 rig.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 isJumping = true;
             }
