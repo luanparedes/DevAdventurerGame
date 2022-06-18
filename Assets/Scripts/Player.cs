@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public float speed;
     public float jumpForce;
     private bool isJumping;
+    private bool isBowAttacking;
 
     private Rigidbody2D rig;
     private Animator anim;
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour
     {
         Move();
         Jump();
+        BowAttack();
     }
 
     public void Move()
@@ -34,18 +36,18 @@ public class Player : MonoBehaviour
 
         rig.velocity = new Vector2(movement * speed, rig.velocity.y);
 
-        if(movement > 0 && !isJumping)
+        if(movement > 0 && !isJumping && !isBowAttacking)
         {
             anim.SetInteger("transition", 1);
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        if(movement < 0 && !isJumping)
+        if(movement < 0 && !isJumping && !isBowAttacking)
         {
             anim.SetInteger("transition", 1);
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
 
-        if (movement == 0 && !isJumping)
+        if (movement == 0 && !isJumping && !isBowAttacking)
             anim.SetInteger("transition", 0);
     }
 
@@ -59,6 +61,23 @@ public class Player : MonoBehaviour
                 rig.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
                 isJumping = true;
             }
+        }
+    }
+
+    public void BowAttack()
+    {
+        StartCoroutine("BowFire");
+    }
+
+    IEnumerator BowFire()
+    {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            isBowAttacking = true;
+            anim.SetInteger("transition", 3);
+            yield return new WaitForSeconds(0.5f);
+            isBowAttacking = false;
+            anim.SetInteger("transition", 0);
         }
     }
 
