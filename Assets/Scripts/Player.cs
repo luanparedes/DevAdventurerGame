@@ -8,9 +8,13 @@ public class Player : MonoBehaviour
     public float jumpForce;
     private bool isJumping;
     private bool isBowAttacking;
+    private float movement;
 
     private Rigidbody2D rig;
     private Animator anim;
+    
+    public Transform firePoint;
+    public GameObject bow;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +36,7 @@ public class Player : MonoBehaviour
 
     public void Move()
     {
-        float movement = Input.GetAxis("Horizontal");
+        movement = Input.GetAxis("Horizontal");
 
         rig.velocity = new Vector2(movement * speed, rig.velocity.y);
 
@@ -74,7 +78,14 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V))
         {
             isBowAttacking = true;
+            GameObject bow1 = Instantiate(bow, firePoint.position, firePoint.rotation);
             anim.SetInteger("transition", 3);
+
+            if(transform.rotation.y >= 0)
+                bow1.GetComponent<Bow>().isRight = true;
+            else if(transform.rotation.y < 0)
+                bow1.GetComponent<Bow>().isRight = false;
+
             yield return new WaitForSeconds(0.5f);
             isBowAttacking = false;
             anim.SetInteger("transition", 0);
